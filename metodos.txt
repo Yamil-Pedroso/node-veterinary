@@ -1,0 +1,25 @@
+## GUARDAR Método #1: #1: https://mongoosejs.com/docs/models.html
+router.post('/', async (req, res) => {
+    const body = req.body
+    console.log(body)
+    try {
+        const mascotaDB = new Mascota(body)
+        await mascotaDB.save()
+        res.redirect('/mascotas')
+    } catch (error) {
+        console.log('error', error)
+    }
+})
+
+## GUARDAR Método #2: https://mongoosejs.com/docs/api.html#model_Model.create
+
+router.post('/', async (req, res) => {
+    const body = req.body
+    console.log(body)
+    try {
+        await Mascota.create(body)
+        res.redirect('/mascotas')
+    } catch (error) {
+        console.log('error', error)
+    }
+})

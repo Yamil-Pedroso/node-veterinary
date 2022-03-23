@@ -1,0 +1,133 @@
+<%- include('templates/header', {tituloWeb: 'Página || detalles de mascota'}) %>
+
+    <div class="container">
+        <h1>Detalles Mascota </h1>
+        <% if (err) { %>
+            <p>
+                <%=  mensaje %> 
+            </p>
+            <div class="d-grid gap-2">
+                <a 
+                  class="btn btn-dark"
+                  href="/mascotas"
+                  >Volver a Mascotas</a>
+            </div>
+        <% } %>
+
+        <% if (!err) { %>
+            <form id="formularioEditar"   data-id="<%= mascota.id %> ">
+                <input
+                    type="text"
+                    class="form-control my-2"
+                    name="nombre"
+                    value="<%= mascota.nombre %> " 
+                    id="nombreInput"
+                >
+                <input
+                    type="text"
+                    class="form-control my-2"
+                    name="description"
+                    value="<%= mascota.description %> " 
+                    id="descriptionInput"
+                >
+                 <button
+                    class="btn btn-warning d-grid gap-2"
+                    type="submit"
+                >
+                        Editar
+                </button>
+            </form>
+            <hr>
+            <button                           
+                 href="/mascotas"
+                 class="btn btn-danger btn-sm mt-5"
+                 id="btnEliminar"
+                 data-id = "<%= mascota.id %>"
+               >
+                 Eliminar
+            </button>
+
+            <!--<table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                   <tr>
+                        <th scope="row"><%= mascota.id %></th>
+                        <td><%= mascota.nombre %></td>
+                        <td><%= mascota.description %></td>
+                        <td>
+                            
+                          </td>
+                    </tr>
+                </tbody>
+              </table>-->
+        <% } %>
+    </div>
+
+<%- include('templates/footer') %>
+
+<script>
+    const btnEliminar = document.querySelector('#btnEliminar');
+    btnEliminar.addEventListener('click', async () => {
+      console.log('click dado!');
+        const id = btnEliminar.dataset.id;
+        try {
+            const data = await fetch(`/mascotas/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const res = await data.json();
+
+            if(res.estado) {
+                window.location.href = '/mascotas';
+            } else {
+                console.log(res);
+            }
+
+            console.log(res);
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    const formularioEditar = document.querySelector('#formularioEditar');
+
+    formularioEditar.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nombre = formularioEditar.elements['nombre'].value; // 1ra opción para llamar valores
+        const description = document.querySelector('#descriptionInput').value; // 2da opción para llamar valores
+        const id = formularioEditar.dataset.id;
+
+        try {
+            const data = await fetch(`/mascotas/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nombre,
+                    description
+                })
+            });
+            const res = await data.json();
+            console.log(res);
+
+            if(res.estado) {
+                window.location.href = '/mascotas';
+            } else {
+                console.log(res);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+</script>
